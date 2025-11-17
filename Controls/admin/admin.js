@@ -53,20 +53,20 @@ import Cart from "../../models/Cart.js"
           return res.status(404).json({Message:"Internal server error",error})
       }
   }
-  export const deleteCategory = async (req , res) => {
-      if (req.user.role !== "Admin" && req.user.role !== "Owner") {
-              return res.status(500).json({message : "You don't have access to do that"})
-      }
-      const { id } = req.params
-      try {
-          const category = await Category.findById(id)
-          await category.deleteOne({_id : id})
-          return res.status(200).json({message : 'User deleted'})
-      } catch (error) {
-          console.log(error)
-          res.status(500).json({message : 'Internal server error'})
-      }
-  }
+  // export const deleteCategory = async (req , res) => {
+  //     if (req.user.role !== "Admin" && req.user.role !== "Owner") {
+  //             return res.status(500).json({message : "You don't have access to do that"})
+  //     }
+  //     const { id } = req.params
+  //     try {
+  //         const category = await Category.findById(id)
+  //         await category.deleteOne({_id : id})
+  //         return res.status(200).json({message : 'User deleted'})
+  //     } catch (error) {
+  //         console.log(error)
+  //         res.status(500).json({message : 'Internal server error'})
+  //     }
+  // }
   export const AddSubcategory = async (req, res) => {
       const { name, slug, categoryId,genre } = req.body;
       if (req.user.role !== "Admin" && req.user.role !== "Owner") {
@@ -119,6 +119,32 @@ import Cart from "../../models/Cart.js"
           res.status(500).json({message : 'Internal server error'})
       }
   }
+  export const deleCategory = async (req, res) => {
+    if (req.user.role !== "Admin" && req.user.role !== "Owner") {
+      return res.status(403).json({ message: "You don't have access to do that" });
+    }
+
+    const { id } = req.params;
+    console.log("Deleting category id:", id);
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ message: "Invalid category ID" });
+    }
+
+    try {
+      const category = await Category.findById(id);
+      if (!category) {
+        return res.status(404).json({ message: "Category not found" });
+      }
+
+      await Category.deleteOne({ _id: id });
+      return res.status(200).json({ message: "Category deleted" });
+    } catch (error) {
+      console.log(error);
+      res.status(500).json({ message: "Internal server error" });
+    }
+  };
+
 // Product
 
   export const getProduct = async(req,res)=>{    
