@@ -20,7 +20,7 @@ connectToMongooset();
 
 app.use(express.json());
 app.use(cors({
-  origin: ['http://localhost:5173', 'http://142.93.171.166'],
+  origin: ['http://localhost:5173', 'http://142.93.171.166', 'https://esseket.duckdns.org'],
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   credentials: true
 }));
