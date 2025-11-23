@@ -1,9 +1,10 @@
+
 import express from 'express';
 import colors from 'colors';
-import multer from 'multer';
 import cors from 'cors';
-import path from 'path'; // ✅ Add this
+import path from 'path';
 import { fileURLToPath } from 'url';
+
 import connectToMongooset from './config/DBconfig.js';
 import commonRouter from './router/commonRouter.js';
 import ownerRouter from './router/owenrRouter.js';
@@ -12,28 +13,53 @@ import adminRouter from './router/adminRouter.js';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const port = process.env.PORT || 5000;
-const app = express();
+// ✅ Match Nginx proxy port
+const port = process.env.PORT || 2025;
 
-// Connect to database
+const app = express();
 connectToMongooset();
 
 app.use(express.json());
+
+// ✅ CORS configuration
+const allowedOrigins = [
+  'http://localhost:5173',       // Dev
+  'https://esseket.duckdns.org'  // Production
+];
+
+app.use((req, res, next) => {
+  res.setHeader('Vary', 'Origin'); // Helps caches handle per-origin responses
+  next();
+});
+
+
 app.use(cors({
-  origin: ['http://localhost:5173', 'http://142.93.171.166', 'https://esseket.duckdns.org'],
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  credentials: true
+  origin: (origin, cb) => {
+    if (!origin || allowedOrigins.includes(origin)) {
+      return cb(null, true);
+    }
+    return cb(new Error('Not allowed by CORS'));
+  },
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: false
 }));
 
-// ✅ Serve uploads folder
+
+
+// ✅ Handle preflight requests
+app.use(cors());
+
+// ✅ Serve uploads locally (optional, Nginx already serves them)
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
+// Routes
 app.use('/api', commonRouter);
 app.use('/api/Owner', ownerRouter);
 app.use('/api/Admin', adminRouter);
 
 app.listen(port, () => {
-  console.log(`server is running on port ${port}`.blue.underline);
+  console.log(`Server is running on port ${port}`.blue.underline);
 }).on('error', (error) => {
   console.error('Server failed to start:', error);
 });

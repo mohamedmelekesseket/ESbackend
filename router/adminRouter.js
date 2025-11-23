@@ -21,6 +21,6 @@ router.post("/Add-Product",protect,upload.any(),AddProduct)
 router.get('/getMessage',protect,Messages)
 router.delete('/Delete-Product/:id',protect,deleteProduct)
 router.get("/Get-products",getProduct)
-router.get("/Get-product/:id",getProductById)
+router.get("/Get-product-admin/:id", getProductById)
 router.put('/UpdateProduct/:id',protect,upload.any(),UpdateProduct)
 export default router
