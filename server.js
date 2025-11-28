@@ -1,4 +1,3 @@
-
 import express from 'express';
 import colors from 'colors';
 import cors from 'cors';
@@ -33,6 +32,9 @@ app.use((req, res, next) => {
 });
 
 
+
+
+// ✅ Apply CORS globally (handles preflight automatically)
 app.use(cors({
   origin: (origin, cb) => {
     if (!origin || allowedOrigins.includes(origin)) {
@@ -42,13 +44,13 @@ app.use(cors({
   },
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
-  credentials: false
+  credentials: true,
+  optionsSuccessStatus: 200
 }));
 
+// ✅ Explicit preflight handler for all routes
+app.options(/.*/, cors());
 
-
-// ✅ Handle preflight requests
-app.use(cors());
 
 // ✅ Serve uploads locally (optional, Nginx already serves them)
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
