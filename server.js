@@ -9,6 +9,9 @@ import commonRouter from './router/commonRouter.js';
 import ownerRouter from './router/owenrRouter.js';
 import adminRouter from './router/adminRouter.js';
 
+import dotenv from 'dotenv';
+dotenv.config();
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 

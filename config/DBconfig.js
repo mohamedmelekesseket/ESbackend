@@ -1,15 +1,22 @@
-import mongoose from "mongoose";
-import colors from "colors";
 
-const URL = process.env.MONGO_CONNECT
+import dotenv from 'dotenv';
+dotenv.config();
+import mongoose from 'mongoose';
+import colors from 'colors';
+
+const URL = process.env.MONGO_URI;
 
 const connectToMongooset = async () => {
-    try {
-        await mongoose.connect(URL)
-        console.log("Database connected successfully".green.underline)
-    } catch (error) {
-        console.log("Database connection failed:".red, error);
+  try {
+    if (!URL) {
+      console.error('❌ Missing MONGO_URI in .env');
+      return;
     }
-}
+    await mongoose.connect(URL);
+    console.log('✅ Database connected successfully'.green.underline);
+  } catch (error) {
+    console.log('❌ Database connection failed:'.red, error.message);
+  }
+};
 
-export default connectToMongooset
+export default connectToMongooset;
