@@ -672,5 +672,5 @@ async function SendEmail(message, Number, Name, email, subject) {
 
 
 const GenerateToken =(id)=>{
-    return jwt.sign({id},process.env.JWT_secret,{expiresIn:"15d"})
+    return jwt.sign({id},process.env.JWT_SECRET,{expiresIn:"7d"})
 }
