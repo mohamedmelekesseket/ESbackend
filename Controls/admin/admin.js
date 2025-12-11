@@ -22,8 +22,9 @@ import Cart from "../../models/Cart.js"
   export const AddCategory = async (req,res) => {
       const {name,slug,images,icon} = req.body
       if (req.user.role !== "Admin" && req.user.role !== "Owner") {
-              return res.status(500).json({message : "You don't have access to do that"})
+        return res.status(403).json({ message: "You don't have access to do that" }); // use 403 Forbidden
       }
+
       try {
           if(!name) {
               return res.status(400).json({message : 'Category Name required'})
@@ -127,9 +128,9 @@ import Cart from "../../models/Cart.js"
     const { id } = req.params;
     console.log("Deleting category id:", id);
 
-    if (!mongoose.Types.ObjectId.isValid(id)) {
-      return res.status(400).json({ message: "Invalid category ID" });
-    }
+    // if (!mongoose.Types.ObjectId.isValid(id)) {
+    //   return res.status(400).json({ message: "Invalid category ID" });
+    // }
 
     try {
       const category = await Category.findById(id);
